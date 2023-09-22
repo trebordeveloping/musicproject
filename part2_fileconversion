@@ -1,0 +1,35 @@
+# PUBLIC LIBRARIES  
+import os
+
+# LOCAL FILES
+from functions import (
+    convert_m4a_to_mp3
+)
+
+# STEP 4: Match info files to audio files
+
+with open("artists.txt", "r") as input_file:
+    artists_list = [line.strip() for line in input_file]
+
+for artist in artists_list:
+
+    artist_path = f"D:\\rober\Music\{artist}"
+
+    user_input = input(f"{artist}? (y/n): ")
+
+    if user_input == "y":
+        
+
+# STEP 5: File conversion
+
+        albums_list = os.listdir(artist_path)
+
+        for album in albums_list:
+
+            album_path = f"{artist_path}\{album}"
+            
+            with open(f"{album_path}\{artist} · {album}.csv", "r") as input_file:
+                album_info = [line.strip() for line in input_file]
+
+
+            
