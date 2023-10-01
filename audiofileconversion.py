@@ -1,39 +1,29 @@
 import os
 from pydub import AudioSegment
 import ffmpeg
+import shutil
 
-input_directory = "D:\\rober\Music\Bruno Mars\[2012] Unorthodox Juxebox"
-output_directory = "D:\\rober\Music\Bruno Mars\[2012] Unorthodox Jukebox\mp3files"
-os.makedirs(output_directory, exist_ok=True)
+def convert_m4a_to_mp3(input_dir):
 
-def convert_m4a_to_mp3(input_file, output_file):
-    audio = AudioSegment.from_file(input_file, format="m4a")
-    audio.export(output_file, format="mp3")
+    m4a_files = [] # list of m4a files in input directory
 
-files = []
+    for file in os.listdir(input_dir): # loop through input directory
 
-for file_name in os.listdir(input_directory):
-    if file_name.endswith(".m4a"):
-        input_file_path = os.path.join(input_directory, file_name)
-        modification_time = os.path.getmtime(input_file_path)
-        files.append((file_name, input_file_path, modification_time))
+        if file.endswith(".m4a"): # choose m4a files
 
-print("Sorting with respect to time modified...", end=" ")
-files.sort(key=lambda x: x[2])
-print("Done")
-print("Converting to " + output_directory + "\n")
-
-for file_name, input_file_path, _ in files:
-
-    output_file_path = os.path.join(output_directory, os.path.basename(file_name).replace(".m4a", ".mp3"))
-
-    print(f" - Converting: {file_name}...", end=" ")
-
-    try:
-        convert_m4a_to_mp3(input_file_path, output_file_path)
-        print("Done")
-
-    except Exception as e:
-        print(f"Error converting {file_name}: {str(e)}")
-
+            file_path = os.path.join(input_dir, file) # save file path of file
+            file_modtime = os.path.getmtime(file_path) # find time modified of file
+            m4a_files.append((file, file_path, file_modtime)) # save information in list
+        
+    m4a_files.sort(key=lambda x:x[2]) # sort with respect to time modified
+    new_dir = os.path.join(input_dir, "m4a") # new directory for m4a files
+    os.makedirs(new_dir, exist_ok=True) # create it if it doesn't already exist
+        
+    for file, old_file_path, _ in m4a_files:
+        # move to m4a directory
+        new_file_path = os.path.join(new_dir, file)
+        shutil.move(old_file_path, new_file_path)
+        # convert to mp3
+        audio = AudioSegment.from_file(new_file_path, format="m4a")
+        audio.export(old_file_path[:-4]+".mp3", format="mp3")
 
