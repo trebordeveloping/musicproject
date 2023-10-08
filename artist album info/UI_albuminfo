@@ -2,9 +2,14 @@ import tkinter as tk
 from tkinter import filedialog
 import os
 
-# from _ import (
-#     _
-# )
+from authorisation import (
+    get_token
+)
+
+from functions import (
+    search_for_artist,
+    artist_check
+)
 
 files_window = False
 
@@ -50,8 +55,23 @@ def convert():
     finished_label.pack()
 
 def fetch_album_info():
+
+    artist = artist_label.cget("text")[14:]
+
+    if artist_check(artist):
+        print(artist, "already done.")
+    else:
+        print("Fetching:", artist)
+
+def find_artist():
     artist = artist_entry.get()
-    print("Chosen artist: ", artist)
+
+    artist = search_for_artist(token, artist)["name"]
+
+    artist_label.config(text="Artist found: " + artist)
+
+# token
+token = get_token()
 
 # root window
 root = tk.Tk()
@@ -63,22 +83,23 @@ fileconversion_label = "FETCH ARTIST'S ALBUM INFORMATION"
 fileconversion_label = tk.Label(root, text=fileconversion_label)
 fileconversion_label.pack()
 
-choosefolder_label = "Choose artist: "
-choosefolder_label = tk.Label(root, text=choosefolder_label)
-choosefolder_label.pack()
+chooseartist_label = "Choose artist: "
+chooseartist_label = tk.Label(root, text=chooseartist_label)
+chooseartist_label.pack()
 
 artist_entry = tk.Entry(root)
 artist_entry.pack()
 
+search_button = tk.Button(root, text="Search", command=find_artist)
+search_button.pack(pady=20)
+
+artist_label = "No artist chosen"
+artist_label = tk.Label(root, text=artist_label)
+artist_label.pack()
+
 fetch_button = tk.Button(root, text="Fetch", command=fetch_album_info)
 fetch_button.pack(pady=20)
 
-folder_label = "Label 2"
-folder_label = tk.Label(root, text=folder_label)
-folder_label.pack()
-
-convert_button = tk.Button(root, text="Button 2", command=convert)
-convert_button.pack(pady=20)
 
 # start main loop
 root.mainloop()

@@ -105,3 +105,12 @@ def url_to_image(image_url, image_path, message=False):
 def convert_m4a_to_mp3(input_file_path, output_file_path):
     audio = AudioSegment.from_file(input_file_path, format="m4a")
     audio.export(output_file_path, format="mp3")
+
+def artist_check(artist):
+
+    with open("artist album info\\artists.txt", "r") as input_file:
+        for line in input_file:
+            if line.strip() == artist:
+                return True
+    
+    return False
